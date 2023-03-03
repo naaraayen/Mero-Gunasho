@@ -24,9 +24,9 @@ class RegisterComplainScreen2 extends StatefulWidget {
 class _RegisterComplainScreen2State extends State<RegisterComplainScreen2> {
   late Future complainFuture;
   var isLoading = false;
-  int? selectedIndex = null;
+  int? selectedIndex;
   bool isExistingComplainSelected = false;
-  var prevValue = null;
+  int? prevValue;
   var selectedComplain = '';
 
   @override
@@ -88,8 +88,7 @@ class _RegisterComplainScreen2State extends State<RegisterComplainScreen2> {
   @override
   Widget build(BuildContext context) {
     final tempData = Provider.of<TemporaryData>(context, listen: false);
-    final getWardList = Provider.of<Complain>(context, listen: false)
-        .filterComplain(int.parse(tempData.wardNo), tempData.category);
+
     return Scaffold(
       body: SafeArea(
           child: Padding(
@@ -122,23 +121,12 @@ class _RegisterComplainScreen2State extends State<RegisterComplainScreen2> {
                   ),
 
                   // Loads up existing complains of the selected ward in selected category (if any)
-                  getWardList.isEmpty
-                      ? Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Column(
-                            children: [
-                              Image.asset(
-                                'assets/logos/mero_gunasho_complain_not_found.png',
-                                fit: BoxFit.cover,
-                              ),
-                              CustomText(
-                                  'No Existing Complains Found on the category ${tempData.category} on Ward no ${tempData.wardNo}. You can proceed further to make a new complain.'),
-                            ],
-                          ),
-                        )
-                      : SizedBox(
-                          height: min(getWardList.length * 145, 435),
-                          child: FutureBuilder(
+                  Consumer<Complain>(builder: (ctx, complainData, _) {
+                    final getWardList = complainData.filterComplain(
+                        int.parse(tempData.wardNo!), tempData.category!);
+                    return SizedBox(
+                      height: getWardList.isNotEmpty? min(getWardList.length * 150, 450 ) : null,
+                      child: FutureBuilder(
                               future: complainFuture,
                               builder: ((ctx, dataSnapshot) {
                                 if (dataSnapshot.connectionState ==
@@ -149,7 +137,25 @@ class _RegisterComplainScreen2State extends State<RegisterComplainScreen2> {
                                           'Unable To Fetch Your Complains'),
                                     );
                                   }
-                                  return ListView.builder(
+
+                                  return getWardList.isEmpty
+                          ? 
+                          
+                          Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Column(
+                                
+                                children: [
+                                  Image.asset(
+                                    'assets/logos/mero_gunasho_complain_not_found.png',
+                                    fit: BoxFit.cover,
+                                  ),
+                                  CustomText(
+                                      'No Existing Complains Found on the category ${tempData.category} on Ward no ${tempData.wardNo}. You can proceed further to make a new complain.'),
+                                ],
+                              ),
+                            )
+                          : ListView.builder(
                                     itemCount: getWardList.length,
                                     itemBuilder: ((ctx, index) {
                                       return InkWell(
@@ -173,34 +179,8 @@ class _RegisterComplainScreen2State extends State<RegisterComplainScreen2> {
                                       child: CircularProgressIndicator());
                                 }
                               })),
-                        ),
-
-                  // getWardList.isEmpty
-                  //     ? Padding(
-                  //         padding: const EdgeInsets.all(20.0),
-                  //         child: CustomText(
-                  //             'No Existing Complains Found on the category ${tempData.category} on Ward no ${tempData.wardNo}. You can proceed further to make a new complain.'),
-                  //       )
-                  //     : SizedBox(
-                  //         height: min(getWardList.length * 140, 405),
-                  //         child: ListView.builder(
-                  //             itemCount: getWardList.length,
-                  //             itemBuilder: ((ctx, index) {
-                  //               return InkWell(
-                  //                   onTap: () {
-                  //                     //isSelected = false;
-                  //                     toggleSelection(
-                  //                         index, getWardList[index].id);
-                  //                   },
-                  //                   child: ci.ComplainItem(
-                  //                       getWardList[index].id,
-                  //                       selectedIndex == index
-                  //                           ? (isSelected
-                  //                               ? Colors.grey
-                  //                               : Colors.white)
-                  //                           : Colors.white));
-                  //             })),
-                  //       )
+                    );
+                  }),
                 ],
               ),
             ),

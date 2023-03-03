@@ -25,8 +25,18 @@ class _AuthScreenState extends State<AuthScreen> {
 
   AuthMode _authMode = AuthMode.logIn;
 
+  final passwordFocus = FocusNode();
+  final confirmPasswordfocus = FocusNode();
+
+  @override
+  void dispose() {
+    passwordFocus.dispose();
+    confirmPasswordfocus.dispose();
+    super.dispose();
+  }
 
   void _submit() async {
+    passwordFocus.unfocus;
     if (!_formKey.currentState!.validate()) {
       // Invalid!
       return;
@@ -53,19 +63,22 @@ class _AuthScreenState extends State<AuthScreen> {
       } else if (error.toString().contains('INVALID_EMAIL')) {
         errorMessage = 'This is not a valid email';
       } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
-        errorMessage = 'Could not find an email with that email';
+        errorMessage = 'Could not find an email';
       } else if (error.toString().contains('INVALID_PASSWORD')) {
         errorMessage = 'This is not a valid password';
       }
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(errorMessage)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(errorMessage),
+        duration: const  Duration(seconds: 1),
+      ));
     } catch (_) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-              'Unable To To The Intended Action. Please Try Again Later.')));
+        content: Text(
+            'Unable To Perform The Intended Action. Please Try Again Later.'),
+        duration: Duration(seconds: 1),
+      ));
     }
-    setState(() {
-    });
+    setState(() {});
   }
 
 //method to toggle authentication page
@@ -111,7 +124,8 @@ class _AuthScreenState extends State<AuthScreen> {
                     )),
                 SizedBox(
                     width: mediaQueryData.size.width * 0.6,
-                    child: const Divider(color: Color(0XFF3F3D56), thickness: 2.0)),
+                    child: const Divider(
+                        color: Color(0XFF3F3D56), thickness: 2.0)),
                 CustomText(
                   _authMode == AuthMode.logIn
                       ? 'LOG IN AS A CITIZEN'
@@ -139,9 +153,12 @@ class _AuthScreenState extends State<AuthScreen> {
                             }
                             return null;
                           },
+                          onFieldSubmitted: (_) => FocusScope.of(context)
+                              .requestFocus(passwordFocus),
                         ),
                         CustomTextField(
                           label: 'Password',
+                          focusNode: passwordFocus,
                           validator: (value) {
                             if (value!.isEmpty || value.length < 8) {
                               return 'Password must be of 8 characters';
@@ -155,10 +172,15 @@ class _AuthScreenState extends State<AuthScreen> {
                             }
                             return null;
                           },
+                          onFieldSubmitted: (_) => _authMode == AuthMode.logIn
+                              ? FocusScope.of(context).unfocus()
+                              : FocusScope.of(context)
+                                  .requestFocus(confirmPasswordfocus),
                         ),
                         if (_authMode == AuthMode.signUp)
                           CustomTextField(
                             label: 'Confirm Password',
+                            focusNode: confirmPasswordfocus,
                             validator: (value) {
                               if (value != _passwordController.text) {
                                 return 'Password does not match';
@@ -183,7 +205,8 @@ class _AuthScreenState extends State<AuthScreen> {
                     TextButton(
                       onPressed: _authMode == AuthMode.signUp
                           ? _switchAuthMode
-                          : () async {
+                          : () {
+                              FocusManager.instance.primaryFocus?.unfocus();
                               _submit();
                             },
                       style: const ButtonStyle(
@@ -203,7 +226,8 @@ class _AuthScreenState extends State<AuthScreen> {
                     const SizedBox(height: 5),
                     TextButton(
                       onPressed: _authMode == AuthMode.signUp
-                          ? () async {
+                          ? () {
+                              FocusManager.instance.primaryFocus?.unfocus();
                               _submit();
                             }
                           : _switchAuthMode,

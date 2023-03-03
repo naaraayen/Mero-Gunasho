@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../exeception_handler/http_exception.dart';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class Authentication with ChangeNotifier {
   late String? _tokenId;
   late String? _userId;
@@ -28,7 +30,7 @@ class Authentication with ChangeNotifier {
       String authMode, String email, String password) async {
     try {
       final url = Uri.parse(
-          'https://identitytoolkit.googleapis.com/v1/accounts:$authMode?key=AIzaSyDpYRmu1Aywx9QtXikZZmoeaH4s6smfmZE');
+          'https://identitytoolkit.googleapis.com/v1/accounts:$authMode?key=${dotenv.env['KEY']}');
       final response = await http.post(url,
           body: json.encode({
             'email': email,

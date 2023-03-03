@@ -16,9 +16,9 @@ class RegisterComplainScreen1 extends StatefulWidget {
 }
 
 class _RegisterComplainScreen1State extends State<RegisterComplainScreen1> {
-  var onSelectedWardNo;
+  String? onSelectedWardNo;
 
-  var onSelectedCategory;
+  String? onSelectedCategory;
 
   // static data
   // TODO: Fetch these data from admin panel
@@ -90,7 +90,7 @@ class _RegisterComplainScreen1State extends State<RegisterComplainScreen1> {
                       (value) {
                     if (value != null) {
                       setState(() {
-                        onSelectedWardNo = value;
+                        onSelectedWardNo = value.toString();
                         tempData.setWardNo(onSelectedWardNo);
                       });
                     }
@@ -104,8 +104,8 @@ class _RegisterComplainScreen1State extends State<RegisterComplainScreen1> {
                       (value) {
                     if (value != null) {
                       setState(() {
-                        onSelectedCategory = value;
-                        tempData.setCategory(onSelectedCategory);
+                        onSelectedCategory = value.toString();
+                        tempData.setCategory(onSelectedCategory!);
                       });
                     }
                   }),

@@ -13,9 +13,9 @@ class SelectableComplainList extends StatefulWidget {
 
 class _SelectableComplainListState extends State<SelectableComplainList> {
   var isLoading = false;
-  int? selectedIndex = null;
+  int? selectedIndex;
+  int? prevValue;
   bool isSelected = false;
-  var prevValue = null;
   var selectedComplain = '';
   void toggleSelection(int index, String complainId) {
     if (prevValue == index) {
@@ -31,14 +31,13 @@ class _SelectableComplainListState extends State<SelectableComplainList> {
     });
     selectedComplain = complainId;
     prevValue = selectedIndex;
-    //print(prevValue);
   }
 
   @override
   Widget build(BuildContext context) {
     final tempData = Provider.of<TemporaryData>(context, listen: false);
     final getWardList = Provider.of<Complain>(context, listen: false)
-        .filterComplain(int.parse(tempData.wardNo), tempData.category);
+        .filterComplain(int.parse(tempData.wardNo!), tempData.category!);
 
     return getWardList.isEmpty
         ? const Text('Unable To Fetch')

@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import './providers/auth.dart';
+import './providers/complain.dart';
 import './providers/temporary_data.dart';
 import './screens/auth_screen.dart';
+import './screens/home_screen.dart';
 import './screens/reg_complain_screen_1.dart';
 import './screens/reg_complain_screen_2.dart';
 import './screens/reg_complain_screen_3.dart';
 import './screens/reg_completion_screen.dart';
-import 'package:provider/provider.dart';
-import './screens/home_screen.dart';
-import './providers/complain.dart';
+
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 // TODO : Yet to implemet admin setup
-void main() {
+Future main() async {
+  await dotenv.load(fileName: ".env");
   runApp(const MyApp());
 }
 
@@ -36,19 +40,19 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Mero Gunasho',
         debugShowCheckedModeBanner: false,
-        // TODO: Use proper theme
+        // TODO: Use proper theming
         theme: ThemeData(
           primarySwatch: Colors.purple,
         ),
         //home: Home(),
         routes: {
-          '/': (ctx) => AuthScreen(),
+          '/': (ctx) => const AuthScreen(),
           Home.routeName: (ctx) => Home(),
-          RegisterComplainScreen1.routeName: (ctx) => RegisterComplainScreen1(),
-          RegisterComplainScreen2.routeName: (ctx) => RegisterComplainScreen2(),
-          RegisterComplainScreen3.routeName: (ctx) => RegisterComplainScreen3(),
+          RegisterComplainScreen1.routeName: (ctx) => const RegisterComplainScreen1(),
+          RegisterComplainScreen2.routeName: (ctx) => const RegisterComplainScreen2(),
+          RegisterComplainScreen3.routeName: (ctx) => const RegisterComplainScreen3(),
           RegisterCompletionScreen.routeName: (ctx) =>
-              RegisterCompletionScreen(),
+              const RegisterCompletionScreen(),
         },
       ),
     );

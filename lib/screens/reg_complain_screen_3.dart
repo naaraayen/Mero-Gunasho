@@ -146,7 +146,7 @@ class _RegisterComplainScreen3State extends State<RegisterComplainScreen3> {
                   ElevatedButton(
                       onPressed: () {
                         // Calls submitForm method and pushes to new screen if validation succeeds
-                        submitForm(int.parse(wardNo), category);
+                        submitForm(int.parse(wardNo!), category!);
                       },
                       style: const ButtonStyle(
                           padding: MaterialStatePropertyAll(

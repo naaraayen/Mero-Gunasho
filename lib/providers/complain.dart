@@ -128,11 +128,10 @@ class Complain with ChangeNotifier {
       try {
         final url = Uri.parse(
             'https://mero-gunasho-98804-default-rtdb.asia-southeast1.firebasedatabase.app/my-complains/$complainId.json?auth=$authToken');
-        final response = await http.patch(url,
+        await http.patch(url,
             body: json.encode({
               'priority': complainData.priority + 1,
             }));
-        print(response.body);
       } catch (error) {
         rethrow;
       }
@@ -197,7 +196,6 @@ class Complain with ChangeNotifier {
       // To fetch all complains
       if (filterByUser == false) {
         _allItems = extractedComplains;
-        print('allItems = $_allItems');
         notifyListeners();
         return;
       }
